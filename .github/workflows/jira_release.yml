@@ -1,0 +1,26 @@
+name: Jira Release
+on:
+  workflow_call:
+    inputs:
+      jira_version_prefix:
+        required: true
+        type: string
+    secrets:
+      jira_auth_token:
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 버전 정보 추출
+        run: echo "##[set-output name=version;]$(echo '${{ github.event.head_commit.message }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+        id: extract_version_name
+      - name: Jira Release
+        id: release
+        uses: PRNDcompany/jira-release@v1.3
+        with:
+          domain: prndcompany
+          project: HDA
+          version: ${{ inputs.jira_version_prefix }} ${{ steps.extract_version_name.outputs.version }}
+          auth-token: ${{ secrets.jira_auth_token }}
