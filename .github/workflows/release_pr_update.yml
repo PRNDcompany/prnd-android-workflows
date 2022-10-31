@@ -1,0 +1,36 @@
+name: Release PR 업데이트
+on:
+  workflow_call:
+    inputs:
+      jira_version_prefix:
+        required: true
+        type: string
+    secrets:
+      jira_auth_token:
+        required: true
+      github_auth_token: # github_token 예약어와의 충돌 회피
+        required: true
+jobs:
+  pr_update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 버전 정보 추출
+        run: echo "::set-output name=version::$(echo ${GITHUB_HEAD_REF##*/} | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+        id: extract_version
+      - name: Jira 릴리즈 노트 추출
+        id: release_notes
+        uses: PRNDcompany/jira-release-notes@0.7
+        with:
+          domain: prndcompany
+          project: HDA
+          version: ${{ inputs.jira_version_prefix }} ${{ steps.extract_version.outputs.version }}
+          auth-token: ${{ secrets.jira_auth_token }}
+      - name: PR 업데이트
+        uses: tzkhan/pr-update-action@v2
+        with:
+          repo-token: "${{ secrets.github_token }}"
+          base-branch-regex: "master"
+          head-branch-regex: 'release\/|hotfix\/'
+          body-template: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
+          body-update-action: "replace"
