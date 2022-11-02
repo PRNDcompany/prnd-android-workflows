@@ -15,4 +15,4 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
       - name: Build with Gradle
-        run: ./gradlew clean checkDebugUnitTest
+        run: ./gradlew checkDebugUnitTest
