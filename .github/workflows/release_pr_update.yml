@@ -6,9 +6,9 @@ on:
         required: true
         type: string
     secrets:
-      jira_auth_token:
+      JIRA_AUTH_TOKEN:
         required: true
-      github_auth_token: # github_token 예약어와의 충돌 회피
+      GITHUB_AUTH_TOKEN: # github_token 예약어와의 충돌 회피
         required: true
 jobs:
   pr_update:
@@ -25,11 +25,11 @@ jobs:
           domain: prndcompany
           project: HDA
           version: ${{ inputs.jira_version_prefix }} ${{ steps.extract_version.outputs.version }}
-          auth-token: ${{ secrets.jira_auth_token }}
+          auth-token: ${{ secrets.JIRA_AUTH_TOKEN }}
       - name: PR 업데이트
         uses: tzkhan/pr-update-action@v2
         with:
-          repo-token: "${{ secrets.github_token }}"
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
           base-branch-regex: "master"
           head-branch-regex: 'release\/|hotfix\/'
           body-template: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
