@@ -6,7 +6,7 @@ on:
         required: true
         type: string
     secrets:
-      jira_auth_token:
+      JIRA_AUTH_TOKEN:
         required: true
 jobs:
   build:
@@ -23,4 +23,4 @@ jobs:
           domain: prndcompany
           project: HDA
           version: ${{ inputs.jira_version_prefix }} ${{ steps.extract_version_name.outputs.version }}
-          auth-token: ${{ secrets.jira_auth_token }}
+          auth-token: ${{ secrets.JIRA_AUTH_TOKEN }}

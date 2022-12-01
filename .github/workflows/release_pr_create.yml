@@ -9,9 +9,7 @@ on:
         type: string
         default: "main"
     secrets:
-      jira_auth_token:
-        required: true
-      github_auth_token: # github_token 예약어와의 충돌 회피
+      JIRA_AUTH_TOKEN:
         required: true
 jobs:
   pull-request:
@@ -28,13 +26,13 @@ jobs:
           domain: prndcompany
           project: HDA
           version: ${{ inputs.jira_version_prefix }} ${{ steps.extract_version.outputs.version }}
-          auth-token: ${{ secrets.jira_auth_token }}
+          auth-token: ${{ secrets.JIRA_AUTH_TOKEN }}
       - name: Release PR 생성 (main)
         id: create_pr
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: ${{ inputs.main_branch_name }}
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_assignee: ${{ github.event.head_commit.author.name }}
           pr_title: "Release ${{ steps.extract_version.outputs.version }}"
           pr_body: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
@@ -42,7 +40,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: "develop"
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_assignee: ${{ github.event.head_commit.author.name }}
           pr_title: "Release ${{ steps.extract_version.outputs.version }} -> develop"
           pr_body: "${{steps.create_pr.outputs.pr_url}}"
