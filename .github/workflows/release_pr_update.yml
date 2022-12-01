@@ -8,8 +8,6 @@ on:
     secrets:
       JIRA_AUTH_TOKEN:
         required: true
-      GITHUB_AUTH_TOKEN: # github_token 예약어와의 충돌 회피
-        required: true
 jobs:
   pr_update:
     runs-on: ubuntu-latest

@@ -11,8 +11,6 @@ on:
     secrets:
       JIRA_AUTH_TOKEN:
         required: true
-      GITHUB_AUTH_TOKEN: # GITHUB_TOKEN 예약어와의 충돌 회피
-        required: true
 jobs:
   pull-request:
     runs-on: ubuntu-latest
