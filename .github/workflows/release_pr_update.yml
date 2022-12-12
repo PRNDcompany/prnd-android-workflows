@@ -28,7 +28,7 @@ jobs:
         uses: tzkhan/pr-update-action@v2
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          base-branch-regex: "master"
+          base-branch-regex: "main"
           head-branch-regex: 'release\/|hotfix\/'
           body-template: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
           body-update-action: "replace"
