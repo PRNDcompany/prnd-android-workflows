@@ -1,11 +1,11 @@
-name: debug 앱 빌드
+name: 앱 빌드
 on:
   workflow_call:
     secrets:
       PERSONAL_ACCESS_TOKEN:
         required: true
 jobs:
-  build-debug-app:
+  build-app:
     runs-on: migration # self-hosted runner
     steps:
       - uses: actions/checkout@v3
@@ -15,4 +15,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
       - name: Build with Gradle
-        run: ./gradlew assembleDebug
+        run: ./gradlew buildApp
+        env:
+          target-branch: ${{ github.base_ref }}
+          comment-body: ${{ github.event.comment.body }}
