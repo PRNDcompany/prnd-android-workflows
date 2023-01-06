@@ -12,10 +12,15 @@ on:
       JIRA_AUTH_TOKEN:
         required: true
 jobs:
-  pull-request:
+  configure:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Branch 추출
+        id: extract_branch
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF})"
+      - name: Branch 출력
+        run: echo "${{ steps.extract_branch.outputs.branch }}"
       - name: 버전 정보 추출
         run: echo "::set-output name=version::$(echo ${GITHUB_REF##*/} | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
         id: extract_version
@@ -27,20 +32,34 @@ jobs:
           project: HDA
           version: ${{ inputs.jira_version_prefix }} ${{ steps.extract_version.outputs.version }}
           auth-token: ${{ secrets.JIRA_AUTH_TOKEN }}
+  release:
+    runs-on: ubuntu-latest
+    needs: [configure]
+    steps:
       - name: Release PR 생성 (main)
         id: create_pr
-        uses: repo-sync/pull-request@v2
+        uses: peter-evans/create-pull-request@v4
         with:
-          destination_branch: ${{ inputs.main_branch_name }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_assignee: ${{ github.event.head_commit.author.name }}
-          pr_title: "Release ${{ steps.extract_version.outputs.version }}"
-          pr_body: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ${{ inputs.main_branch_name }}
+          branch: ${{ steps.extract_branch.outputs.branch }}
+          title: "Release ${{ steps.extract_version.outputs.version }}"
+          body: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
+          committer: "${{ github.event.head_commit.author.name }} <${{ github.event.head_commit.author.email }}>"
+          author: "${{ github.event.head_commit.author.name }} <${{ github.event.head_commit.author.email }}>"
+          assignees: ${{ github.event.head_commit.author.name }}
+  develop:
+    runs-on: ubuntu-latest
+    needs: [configure, release]    
+    steps:    
       - name: Release PR 생성 (develop)
-        uses: repo-sync/pull-request@v2
+        uses: peter-evans/create-pull-request@v4
         with:
-          destination_branch: "develop"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_assignee: ${{ github.event.head_commit.author.name }}
-          pr_title: "Release ${{ steps.extract_version.outputs.version }} -> develop"
-          pr_body: "${{steps.create_pr.outputs.pr_url}}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: "develop"
+          branch: ${{ steps.extract_branch.outputs.branch }}
+          title: "Release ${{ steps.extract_version.outputs.version }} -> develop"
+          body: "${{steps.create_pr.outputs.pr_url}}"
+          committer: "${{ github.event.head_commit.author.name }} <${{ github.event.head_commit.author.email }}>"
+          author: "${{ github.event.head_commit.author.name }} <${{ github.event.head_commit.author.email }}>"
+          assignees: ${{ github.event.head_commit.author.name }}       
