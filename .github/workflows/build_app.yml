@@ -1,0 +1,21 @@
+name: 앱 빌드
+on:
+  workflow_call:
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+jobs:
+  build-app:
+    runs-on: Android # self-hosted runner
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      - name: Build with Gradle
+        run: >
+          ./gradlew buildApp
+          -P target-branch="${{ github.base_ref }}"
+          -P comment-body="${{ github.event.comment.body }}"
