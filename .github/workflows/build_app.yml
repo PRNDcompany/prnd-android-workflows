@@ -6,7 +6,7 @@ on:
         required: true
 jobs:
   build-app:
-    runs-on: migration # self-hosted runner
+    runs-on: Android # self-hosted runner
     steps:
       - uses: actions/checkout@v3
         with:
