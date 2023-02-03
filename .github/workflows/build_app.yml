@@ -17,5 +17,5 @@ jobs:
       - name: Build with Gradle
         run: >
           ./gradlew buildApp
-          -P target-branch="${{ github.base_ref }}"
-          -P comment-body="${{ github.event.comment.body }}"
+          -P targetBranch="${{ github.base_ref }}"
+          -P commentBody="${{ github.event.comment.body }}"
