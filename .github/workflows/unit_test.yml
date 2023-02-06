@@ -8,8 +8,11 @@ on:
       PERSONAL_ACCESS_TOKEN:
         required: true
 jobs:
+  check-skip:
+    uses: ./.github/workflows/check_skip.yml
   unit-test:
     runs-on: Android # self-hosted runner
+    needs: check-skip
     steps:
       - uses: actions/checkout@v3
         with:

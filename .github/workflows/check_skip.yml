@@ -1,0 +1,9 @@
+name: Check skip ci
+on:
+  workflow_call:
+jobs:
+  check-skip:
+    runs-on: Android
+    if: ${{ !contains(github.event.pull_request.title, '[skip ci]') && !contains(github.event.pull_request.title, '[skip-ci]') }}
+    steps:
+      - run: echo "${{ github.event.pull_request.title }}"
