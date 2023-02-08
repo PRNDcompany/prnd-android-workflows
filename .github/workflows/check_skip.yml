@@ -4,6 +4,6 @@ on:
 jobs:
   check-skip:
     runs-on: Android
-    if: ${{ !contains(github.event.pull_request.title, '[skip ci]') && !contains(github.event.pull_request.title, '[skip-ci]') }}
+    if: github.event.pull_request.draft == false
     steps:
       - run: echo "${{ github.event.pull_request.title }}"
