@@ -18,7 +18,7 @@ jobs:
         id: extract_version_name
       - name: Jira Release
         id: release
-        uses: PRNDcompany/jira-release@v1.5
+        uses: PRNDcompany/jira-release@v1.6
         with:
           domain: prndcompany
           project: HDA
