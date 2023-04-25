@@ -8,6 +8,9 @@ on:
       version_name:
         required: true
         type: string
+      user_name:
+        required: true
+        type: string
     secrets:
       PERSONAL_ACCESS_TOKEN:
         required: true
@@ -40,7 +43,6 @@ jobs:
           
       - name: Commit & Push
         run: |
-          git config user.email "github-actions@github.com"
-          git config user.name "Github Actions"
+          git config user.name "${{ inputs.user_name }}"
           git commit -am "${{ env.VERSION_NAME }} 업데이트"
           git push origin HEAD
