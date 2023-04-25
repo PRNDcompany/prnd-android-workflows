@@ -1,0 +1,49 @@
+name: Release/Hotfix branch 생성
+on:
+  workflow_call:
+    inputs:
+      release_type:
+        required: true
+        type: string
+      version_name:
+        required: true
+        type: string
+      user_name:
+        required: true
+        type: string
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+jobs:
+  release-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: VersionCode 추출후 +1 / 환경변수에 등록
+        run: |
+          version_name=${{ inputs.version_name }}
+          version_code=$(grep "versionCode" buildSrc/src/main/java/Dependencies.kt | awk '{print $4}' | tr -d '\n')
+          # 새로운 versionCode 생성
+          new_version_code=$((version_code + 1))
+          echo "$version_code -> $new_version_code"
+          # 환경변수 등록
+          echo "VERSION_NAME=$version_name" >> $GITHUB_ENV
+          echo "VERSION_CODE=$new_version_code" >> $GITHUB_ENV
+      - name: Release/Hotfix branch 생성
+        run: git checkout -b ${{ inputs.release_type }}/${{ inputs.version_name }}
+
+      - name: 파일에 VersionCode/VersionName 변경
+        run: |
+          echo "${{ env.VERSION_CODE }} - ${{ env.VERSION_NAME }}"
+          sed -i "s/versionCode = [0-9]\+/versionCode = ${{ env.VERSION_CODE }}/g" buildSrc/src/main/java/Dependencies.kt
+          sed -i "s/versionName = \"[^\"]*\"/versionName = \"${{ env.VERSION_NAME }}\"/g" buildSrc/src/main/java/Dependencies.kt
+          
+      - name: Commit & Push
+        run: |
+          git config user.name "${{ inputs.user_name }}-prnd"
+          git config user.email "${{ inputs.user_name }}@prnd.co.kr"
+          git commit -am "${{ env.VERSION_NAME }} 업데이트"
+          git push origin HEAD
