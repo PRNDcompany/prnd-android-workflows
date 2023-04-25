@@ -33,6 +33,7 @@ jobs:
         with:
           destination_branch: ${{ inputs.main_branch_name }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_assignee: ${{ github.event.head_commit.author.name }}
           pr_title: "Release ${{ steps.extract_version.outputs.version }}"
           pr_body: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
       - name: Release PR 생성 (develop)
@@ -40,5 +41,6 @@ jobs:
         with:
           destination_branch: "develop"
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_assignee: ${{ github.event.head_commit.author.name }}
           pr_title: "Release ${{ steps.extract_version.outputs.version }} -> develop"
           pr_body: "${{steps.create_pr.outputs.pr_url}}"
