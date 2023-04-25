@@ -43,6 +43,7 @@ jobs:
           
       - name: Commit & Push
         run: |
-          git config user.name "${{ inputs.user_name }}"
+          git config user.name "${{ inputs.user_name }}-prnd"
+          git config user.email "${{ inputs.user_name }}@prnd.co.kr"
           git commit -am "${{ env.VERSION_NAME }} 업데이트"
           git push origin HEAD
