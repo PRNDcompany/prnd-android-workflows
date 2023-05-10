@@ -11,6 +11,8 @@ jobs:
   check-skip:
     uses: ./.github/workflows/check_skip.yml
   build-app:
+    env:
+      GRADLE_USER_HOME: ../../../.gradle
     runs-on: Android # self-hosted runner
     needs: check-skip
     steps:
@@ -20,6 +22,10 @@ jobs:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
+      # - name: Setup Gradle
+      #   uses: gradle/gradle-build-action@v2
+      #   with:
+      #     gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: >
           ./gradlew buildApp
