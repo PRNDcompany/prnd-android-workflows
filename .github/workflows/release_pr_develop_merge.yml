@@ -22,6 +22,11 @@ jobs:
       env:
         number: ${{ steps.find_pr.outputs.number }}
         sha: ${{ steps.find_pr.outputs.head-sha }}
+    - name: Approve Pull Request
+      uses: juliangruber/approve-pull-request-action@v2.0.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        number: ${{ steps.find_pr.outputs.number }}
     - name: Merge Pull Request
       uses: juliangruber/merge-pull-request-action@v1
       with:
