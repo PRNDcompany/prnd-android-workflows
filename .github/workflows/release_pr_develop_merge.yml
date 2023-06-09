@@ -1,0 +1,35 @@
+name: Release PR develop merge
+
+on:
+  workflow_call:
+
+jobs:
+  pr_develop_merge:
+    # Release PR이 merge 되었을때만 develop으로 자동 merge
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Release branch 추출
+      run: echo ::set-output name=branch::${GITHUB_HEAD_REF}
+      id: extract_branch
+    - name: PR 찾기
+      uses: juliangruber/find-pull-request-action@v1
+      id: find_pr
+      with:
+        branch: ${{ steps.extract_branch.outputs.branch }}
+    - run: echo "Pull Request ${number} (${sha})"
+      env:
+        number: ${{ steps.find_pr.outputs.number }}
+        sha: ${{ steps.find_pr.outputs.head-sha }}
+    - name: Approve Pull Request
+      uses: juliangruber/approve-pull-request-action@v2.0.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        number: ${{ steps.find_pr.outputs.number }}
+    - name: Merge Pull Request
+      uses: juliangruber/merge-pull-request-action@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        number: ${{ steps.find_pr.outputs.number }}
+        method: merge
