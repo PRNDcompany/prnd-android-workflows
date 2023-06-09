@@ -25,8 +25,11 @@ jobs:
           KEY_STORE_FILE_PATH=$RUNNER_TEMP/keystore
           base64 -d -i ${{ secrets.KEY_STORE_FILE }} > $KEY_STORE_FILE_PATH
       - name: Build with Gradle
+        # 현재 위치: runner/_work/repo_name/repo_name
+        # gradle user home 위치: runner/.gradle
         run: >
           ./gradlew buildApp
+          --gradle-user-home "../../../.gradle"
           -P targetBranch="${{ github.base_ref }}"
           -P commentBody="${{ github.event.comment.body }}"
         env:
