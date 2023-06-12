@@ -20,8 +20,19 @@ jobs:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
+      - name: Decode KeyStore File
+        run: |
+          KEY_STORE_FILE_PATH=$RUNNER_TEMP/keystore
+          base64 -d -i ${{ secrets.KEY_STORE_FILE }} > $KEY_STORE_FILE_PATH
       - name: Build with Gradle
         run: >
           ./gradlew buildApp
           -P targetBranch="${{ github.base_ref }}"
           -P commentBody="${{ github.event.comment.body }}"
+        env:
+          HEY_DEALER_SIGNING_PATH: $RUNNER_TEMP/keystore
+          HEY_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
+          HEY_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          HEY_DEALER_FOR_DEALER_SIGNING_PATH: $RUNNER_TEMP/keystore
+          HEY_DEALER_FOR_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
+          HEY_DEALER_FOR_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
