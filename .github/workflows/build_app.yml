@@ -21,8 +21,10 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
       - name: Decode KeyStore File
+        id: decode_key_store_file
         run: |
-          KEY_STORE_FILE_PATH=$RUNNER_TEMP/keystore
+          KEY_STORE_FILE_PATH=$(echo $RUNNER_TEMP/keystore)
+          echo "key_store_file_path=$KEY_STORE_FILE_PATH" >> "$GITHUB_OUTPUT"
           base64 -d -i ${{ secrets.KEY_STORE_FILE }} > $KEY_STORE_FILE_PATH
       - name: Build with Gradle
         # 현재 위치: runner/_work/repo_name/repo_name
@@ -33,9 +35,9 @@ jobs:
           -P targetBranch="${{ github.base_ref }}"
           -P commentBody="${{ github.event.comment.body }}"
         env:
-          HEY_DEALER_SIGNING_PATH: $RUNNER_TEMP/keystore
+          HEY_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
           HEY_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          HEY_DEALER_FOR_DEALER_SIGNING_PATH: $RUNNER_TEMP/keystore
+          HEY_DEALER_FOR_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_FOR_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
           HEY_DEALER_FOR_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
