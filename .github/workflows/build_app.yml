@@ -7,6 +7,12 @@ on:
     secrets:
       PERSONAL_ACCESS_TOKEN:
         required: true
+      KEY_STORE_FILE:
+        required: true
+      SIGNING_NAME:
+        required: true
+      SIGNING_PASSWORD:
+        required: true
 jobs:
   check-skip:
     uses: ./.github/workflows/check_skip.yml
