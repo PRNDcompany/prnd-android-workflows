@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Release branch 추출
-      run: echo ::set-output name=branch::${GITHUB_HEAD_REF}
+      run: echo "branch=${GITHUB_HEAD_REF}" >> $GITHUB_OUTPUT
       id: extract_branch
     - name: PR 찾기
       uses: juliangruber/find-pull-request-action@v1
