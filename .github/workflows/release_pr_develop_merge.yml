@@ -33,6 +33,6 @@ jobs:
     - name: Merge Pull Request
       uses: juliangruber/merge-pull-request-action@v1
       with:
-        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         number: ${{ steps.find_pr.outputs.number }}
         method: merge
