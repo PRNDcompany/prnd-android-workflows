@@ -3,7 +3,7 @@ name: Release PR develop merge
 on:
   workflow_call:
     secrets:
-      PERSONAL_ACCESS_TOKEN:
+      REVIEWER_ACCESS_TOKEN:
         required: true
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
     - name: Approve Pull Request
       uses: juliangruber/approve-pull-request-action@v2.0.0
       with:
-        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        github-token: ${{ secrets.REVIEWER_ACCESS_TOKEN }}
         number: ${{ steps.find_pr.outputs.number }}
     - name: Merge Pull Request
       uses: juliangruber/merge-pull-request-action@v1
