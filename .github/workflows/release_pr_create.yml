@@ -11,7 +11,7 @@ on:
     secrets:
       JIRA_AUTH_TOKEN:
         required: true
-      CREATOR_ACCESS_TOKEN:
+      PERSONAL_ACCESS_TOKEN:
         required: true
 jobs:
   pull-request:
@@ -34,7 +34,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: ${{ inputs.main_branch_name }}
-          github_token: ${{ secrets.CREATOR_ACCESS_TOKEN }}
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           pr_assignee: ${{ github.event.head_commit.author.name }}
           pr_title: "Release ${{ steps.extract_version.outputs.version }}"
           pr_body: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
@@ -42,7 +42,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: "develop"
-          github_token: ${{ secrets.CREATOR_ACCESS_TOKEN }}
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           pr_assignee: ${{ github.event.head_commit.author.name }}
           pr_title: "Release ${{ steps.extract_version.outputs.version }} -> develop"
           pr_body: "${{steps.create_pr.outputs.pr_url}}"
