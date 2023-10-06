@@ -41,6 +41,8 @@ jobs:
   build-app:
     needs: create-check-run
     uses: ./.github/workflows/build_app.yml
+    with:
+      ref: refs/pull/${{ github.event.issue.number }}/merge
     secrets:
       PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       KEY_STORE_FILE: ${{ secrets.KEY_STORE_FILE }}
