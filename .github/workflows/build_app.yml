@@ -4,6 +4,10 @@ concurrency:
   cancel-in-progress: true
 on:
   workflow_call:
+    inputs:
+      ref:
+        type: string
+        default: ${{ github.ref }}
     secrets:
       PERSONAL_ACCESS_TOKEN:
         required: true
@@ -22,6 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          ref: ${{ inputs.ref }}
           submodules: true
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Setup Android SDK
