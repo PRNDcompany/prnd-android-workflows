@@ -50,3 +50,12 @@ jobs:
           HEY_DEALER_FOR_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_FOR_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
           HEY_DEALER_FOR_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+      - name: 앱 파일 업로드
+        run: >
+          prnd-library/script/upload_app.sh
+          author="${{ github.actor }}"
+          repository="${{ github.repository }}"
+          pullRequestNumber="${{ github.event.pull_request.number || github.event.issue.number }}"
+          targetBranch="${{ github.base_ref }}"
+          commentBody="${{ github.event.comment.body }}"
+          githubToken="${{ secrets.PERSONAL_ACCESS_TOKEN }}"
