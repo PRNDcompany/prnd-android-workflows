@@ -1,6 +1,6 @@
 name: 빌드
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref || github.event.issue.number }}
   cancel-in-progress: true
 on:
   workflow_call:
