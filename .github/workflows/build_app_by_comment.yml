@@ -1,0 +1,66 @@
+name: 앱 빌드
+on:
+  workflow_call:
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+      KEY_STORE_FILE:
+        required: true
+      SIGNING_NAME:
+        required: true
+      SIGNING_PASSWORD:
+        required: true
+jobs:
+  create-check-run:
+    runs-on: ubuntu-latest
+    outputs:
+      check_run_id: ${{ fromJson(steps.create_check_run.outputs.data).id }}
+    steps:
+      - name: PR 가져오기
+        id: get_pr
+        uses: octokit/request-action@v2.1.9
+        with:
+          route: GET /repos/{repository}/pulls/{pr_number}
+          repository: ${{ github.repository }}
+          pr_number: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: PR의 head_sha 가져오기
+        id: get_head_sha
+        run: echo "head_sha=$(echo ${{ fromJson(steps.get_pr.outputs.data).head.sha }})" >> $GITHUB_OUTPUT
+      - name: Check Run 생성
+        uses: octokit/request-action@v2.1.9
+        id: create_check_run
+        with:
+          route: POST /repos/{repository}/check-runs
+          repository: ${{ github.repository }}
+          name: "build-app-by-comment"
+          head_sha: ${{ steps.get_head_sha.outputs.head_sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build-app:
+    needs: create-check-run
+    uses: ./.github/workflows/build_app.yml
+    with:
+      ref: refs/pull/${{ github.event.issue.number }}/merge
+    secrets:
+      PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      KEY_STORE_FILE: ${{ secrets.KEY_STORE_FILE }}
+      SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
+      SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+  update-check-run:
+    runs-on: ubuntu-latest
+    needs: [create-check-run, build-app]
+    if: always()
+    steps:
+      - name: Check Run 동기화
+        uses: octokit/request-action@v2.1.9
+        with:
+          route: PATCH /repos/{repository}/check-runs/{check_run_id}
+          repository: ${{ github.repository }}
+          check_run_id: ${{ needs.create-check-run.outputs.check_run_id }}
+          conclusion: ${{ needs.build-app.result }}
+          status: "completed"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
