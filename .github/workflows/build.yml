@@ -52,7 +52,9 @@ jobs:
              ./gradlew assembleQa assembleQb checkQaUnitTest --gradle-user-home "../../../.gradle"
             ;;
           release)
-             ./gradlew assembleRelease bundleRelease assembleQa assembleQb checkReleaseUnitTest --gradle-user-home "../../../.gradle"
+             ./gradlew assembleRelease checkReleaseUnitTest --gradle-user-home "../../../.gradle"
+             ./gradlew bundleRelease --gradle-user-home "../../../.gradle"
+             ./gradlew assembleQa assembleQb --gradle-user-home "../../../.gradle"
             ;;
           *)
              ./gradlew assembleDebug checkDebugUnitTest  --gradle-user-home "../../../.gradle"
