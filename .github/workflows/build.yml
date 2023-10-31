@@ -87,4 +87,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           aws_bucket: ${{ inputs.bucket_name }}
           source_dir: "app/build/files"
-          destination_dir: "tmp/${{ inputs.ref }}"
+          destination_dir: "tmp/${{ github.repository }}/${{ inputs.ref }}"
