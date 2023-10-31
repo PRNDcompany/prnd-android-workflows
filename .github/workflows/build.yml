@@ -11,6 +11,9 @@ on:
       ref:
         type: string
         default: ${{ github.ref }}
+      bucket_name:
+        required: false
+        type: string
     secrets:
       PERSONAL_ACCESS_TOKEN:
         required: true
@@ -20,6 +23,10 @@ on:
         required: true
       SIGNING_PASSWORD:
         required: true
+      AWS_ACCESS_KEY_ID:
+        required: false
+      AWS_SECRET_ACCESS_KEY:
+        required: false
 jobs:
   check-skip:
     uses: ./.github/workflows/check_skip.yml
@@ -67,3 +74,17 @@ jobs:
           HEY_DEALER_FOR_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_FOR_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
           HEY_DEALER_FOR_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+      - name: Copy to files directory
+        if:  inputs.bucket_name != '' && ( inputs.build_type == 'qa' || inputs.build_type == 'release' )
+        run: |
+          mkdir -p app/build/files
+          find app/build/outputs/ -type f \( -name "*.apk" -o -name "*.aab" \) -exec cp {} app/build/files/ \;
+      - name: Upload Files (temp directory)
+        if:  inputs.bucket_name != '' && ( inputs.build_type == 'qa' || inputs.build_type == 'release' )
+        uses: shallwefootball/s3-upload-action@master
+        with:
+          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: ${{ inputs.bucket_name }}
+          source_dir: "app/build/files"
+          destination_dir: "tmp/${{ inputs.ref }}"
