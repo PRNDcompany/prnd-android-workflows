@@ -1,0 +1,37 @@
+name: 임시 APK파일 QA로 이동
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      bucket_name:
+        required: true
+        type: string
+      branch_name:
+        required: true
+        type: string
+      ref:
+        type: string
+        required: true
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+jobs:
+  move_s3_qa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Jira ID 추출
+        id: extract_jira
+        run: echo "id=$(echo ${{ inputs.branch_name }} |  egrep -o 'HD.-[0-9]+' || :)" >> $GITHUB_OUTPUT
+      - name: Jira ID 출력
+        run: |
+          echo Jira ID: ${{ steps.extract_jira.outputs.id }}
+      - name: 임시파일 PR폴더로 이동
+        run: |
+          aws s3 mv s3://${{ inputs.bucket_name }}/tmp/${{ github.repository }}/${{ inputs.ref }}/ s3://${{ inputs.bucket_name }}/${{ inputs.app_name }}/pr/${{ steps.extract_jira.outputs.id }}/ --recursive
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
