@@ -1,0 +1,37 @@
+name: 임시 APK/AAB파일 Release로 이동
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      bucket_name:
+        required: true
+        type: string
+      branch_name:
+        required: true
+        type: string
+      ref:
+        type: string
+        required: true
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+jobs:
+  move_s3_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release 버전 정보 추출
+        id: extract_version
+        run: echo "version=$(echo ${{ inputs.branch_name }} | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)" >> $GITHUB_OUTPUT
+      - name: Release 버전 정보 출력
+        run: |
+          echo Release 버전: ${{ steps.extract_version.outputs.version }}
+      - name: 임시파일 Release폴더로 이동
+        run: |
+          aws s3 mv s3://${{ inputs.bucket_name }}/tmp/${{ github.repository }}/${{ inputs.ref }}/ s3://${{ inputs.bucket_name }}/${{ inputs.app_name }}/release/${{ steps.extract_version.outputs.version }}/ --recursive
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
