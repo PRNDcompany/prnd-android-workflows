@@ -11,7 +11,7 @@ on:
       pr_number:
         required: true
         type: string
-      output_path:
+      output_url:
         required: true
         type: string
     secrets:
@@ -27,6 +27,6 @@ jobs:
           issue-number: ${{ inputs.pr_number }}
           body: |
             @${{ inputs.user_name }} ${{ inputs.build_type }}빌드 파일 생성 완료 :sparkles:
-            ${{ inputs.output_path }}
+            ${{ inputs.output_url }}
           reactions: 'rocket'
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

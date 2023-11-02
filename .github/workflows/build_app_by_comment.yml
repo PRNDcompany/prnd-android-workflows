@@ -87,7 +87,7 @@ jobs:
       build_type: qa
       user_name: ${{ github.event.comment.user.id }}
       pr_number: ${{ github.event.issue.number }}
-      output_path: ${{ needs.move_s3_qa.outputs.path }}
+      output_url: https://${{ inputs.bucket_name }}.s3.ap-northeast-2.amazonaws.com/index.html#${{ needs.move_s3_qa.outputs.path }}
     secrets:
       PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
