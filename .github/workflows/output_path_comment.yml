@@ -26,7 +26,7 @@ jobs:
         with:
           issue-number: ${{ inputs.pr_number }}
           body: |
-            @${{ inputs.user_name }} ${{ inputs.build_type }}빌드 파일 생성 완료 :file_folder: :blue_car: :red_car:
+            @${{ inputs.user_name }} ${{ inputs.build_type }}빌드 파일 생성 완료 📁 🚙 🚗
             ${{ inputs.output_url }}
           reactions: 'rocket'
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
