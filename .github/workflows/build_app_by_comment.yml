@@ -85,7 +85,7 @@ jobs:
     uses: ./.github/workflows/output_path_comment.yml
     with:
       build_type: qa
-      user_name: ${{ github.event.comment.user.name }}
+      user_name: ${{ github.event.comment.user.id }}
       pr_number: ${{ github.event.issue.number }}
       output_path: ${{ needs.move_s3_qa.outputs.path }}
     secrets:
