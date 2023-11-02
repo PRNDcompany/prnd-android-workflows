@@ -85,7 +85,7 @@ jobs:
     uses: ./.github/workflows/output_path_comment.yml
     with:
       build_type: qa
-      user_name: ${{ github.event.comment.user.id }}
+      user_name: ${{ github.event.comment.user.login }}
       pr_number: ${{ github.event.issue.number }}
       output_url: https://${{ inputs.bucket_name }}.s3.ap-northeast-2.amazonaws.com/index.html#${{ needs.move_s3_qa.outputs.path }}
     secrets:
