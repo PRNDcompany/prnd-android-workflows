@@ -80,7 +80,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-  build-output_path_comment:
+  output_path_comment:
     needs: move_s3_qa
     uses: ./.github/workflows/output_path_comment.yml
     with:
