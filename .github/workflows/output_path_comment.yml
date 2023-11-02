@@ -1,0 +1,32 @@
+name: 결과물 파일 경로 댓글 추가
+on:
+  workflow_call:
+    inputs:
+      build_type:
+        required: true
+        type: string
+      user_name:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: string
+      output_path:
+        required: true
+        type: string
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+jobs:
+  output_path_comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ inputs.pr_number }}
+          body: |
+            @${{ inputs.user_name }} ${{ inputs.build_type }}빌드 파일 생성 완료 :sparkles:
+            ${{ inputs.output_path }}
+          reactions: 'rocket'
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
