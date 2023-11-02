@@ -19,6 +19,9 @@ on:
         required: true
       AWS_SECRET_ACCESS_KEY:
         required: true
+    outputs:
+      path:
+        value: ${{ jobs.move_s3_qa.outputs.path }}
 jobs:
   move_s3_release:
     runs-on: ubuntu-latest
