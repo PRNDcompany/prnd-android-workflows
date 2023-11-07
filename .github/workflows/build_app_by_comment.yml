@@ -51,6 +51,7 @@ jobs:
           repository: ${{ github.repository }}
           name: "build-app-by-comment"
           head_sha: ${{ steps.get_head_sha.outputs.head_sha }}
+          status: "in_progress"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-app:
