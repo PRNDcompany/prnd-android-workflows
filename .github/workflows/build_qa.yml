@@ -1,4 +1,4 @@
-name: QA 앱 빌드
+name: QA 빌드
 on:
   workflow_call:
     inputs:
