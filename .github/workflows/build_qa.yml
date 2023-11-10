@@ -1,4 +1,4 @@
-name: QA 앱 빌드
+name: QA 빌드
 on:
   workflow_call:
     inputs:
@@ -54,7 +54,7 @@ jobs:
           status: "in_progress"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build-app:
+  build-qa:
     needs: create-check-run
     uses: ./.github/workflows/build.yml
     with:
@@ -70,7 +70,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   move_s3_qa:
-    needs: [ create-check-run, build-app ]
+    needs: [ create-check-run, build-qa ]
     uses: ./.github/workflows/move_s3_qa.yml
     with:
       app_name: ${{ inputs.app_name }}
@@ -94,7 +94,7 @@ jobs:
 
   update-check-run:
     runs-on: ubuntu-latest
-    needs: [ create-check-run, build-app, move_s3_qa ]
+    needs: [ create-check-run, build-qa, move_s3_qa ]
     if: always()
     steps:
       - name: Check Run 동기화
@@ -103,7 +103,7 @@ jobs:
           route: PATCH /repos/{repository}/check-runs/{check_run_id}
           repository: ${{ github.repository }}
           check_run_id: ${{ needs.create-check-run.outputs.check_run_id }}
-          conclusion: ${{ needs.build-app.result }}
+          conclusion: ${{ needs.build-qa.result }}
           status: "completed"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

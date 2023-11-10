@@ -30,7 +30,7 @@ on:
 jobs:
   check-skip:
     uses: ./.github/workflows/check_skip.yml
-  build-app:
+  build:
     runs-on: Android # self-hosted runner
     needs: check-skip
     steps:
