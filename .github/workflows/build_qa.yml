@@ -49,7 +49,7 @@ jobs:
         with:
           route: POST /repos/{repository}/check-runs
           repository: ${{ github.repository }}
-          name: "build-app-by-comment"
+          name: "build-qa"
           head_sha: ${{ steps.get_head_sha.outputs.head_sha }}
           status: "in_progress"
         env:
