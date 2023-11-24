@@ -8,6 +8,9 @@ on:
       bucket_name:
         required: true
         type: string
+      deploy_url:
+        required: true
+        type: string
     secrets:
       PERSONAL_ACCESS_TOKEN:
         required: true
@@ -88,7 +91,7 @@ jobs:
       build_type: qa
       user_name: ${{ github.event.comment.user.login }}
       pr_number: ${{ github.event.issue.number }}
-      output_url: https://${{ inputs.bucket_name }}.s3.ap-northeast-2.amazonaws.com/index.html#${{ needs.move_s3_qa.outputs.path }}
+      output_url: ${{ inputs.deploy_url }}/#${{ needs.move_s3_qa.outputs.path }}
     secrets:
       PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
