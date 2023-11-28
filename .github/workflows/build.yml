@@ -80,6 +80,13 @@ jobs:
         if: inputs.extra_task != ''
         run: |
           ./gradlew ${{ inputs.extra_task }} --gradle-user-home "../../../.gradle"
+        env:
+          HEY_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
+          HEY_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
+          HEY_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          HEY_DEALER_FOR_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
+          HEY_DEALER_FOR_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
+          HEY_DEALER_FOR_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
       - name: Copy to files directory
         if:  inputs.bucket_name != '' && ( inputs.build_type == 'qa' || inputs.build_type == 'release' )
         run: |
