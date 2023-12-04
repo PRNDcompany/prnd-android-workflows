@@ -1,0 +1,43 @@
+name: Compare jira release issue by release PR
+on:
+  workflow_call:
+    inputs:
+      jira_domain:
+        required: true
+        type: string
+      jira_project:
+        required: true
+        type: string
+      jira_version_prefix:
+        required: true
+        type: string
+    secrets:
+      PERSONAL_ACCESS_TOKEN:
+        required: true
+      JIRA_AUTH_TOKEN:
+        required: true
+jobs:
+  compare-jira-release-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Jira release issue 비교 by release PR
+        id: compare_jira_release_issue
+        uses: PRNDcompany/compare-jira-release-issue-by-release-pr@0.1
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          jira-token: ${{ secrets.JIRA_AUTH_TOKEN }}
+          jira-domain: ${{ inputs.jira_domain }}
+          jira-project: ${{ inputs.jira_project }}
+          jira-version-prefix: ${{ inputs.jira_version_prefix }}
+      - name: jira issue keys 출력
+        run: |
+          echo ${{ steps.compare_jira_release_issue.outputs.missing_issue_keys }}
+      - name: Create comment
+        if: ${{ steps.compare_jira_release_issue.outputs.missing_issue_keys != '[]' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            @${{ github.event.pull_request.assignee.login }} 이 버전에 포함 예정이었으나, 실제 작업되지 않은 Jira이슈 발견 😱
+            ${{ steps.compare_jira_release_issue.outputs.missing_issue_keys }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
