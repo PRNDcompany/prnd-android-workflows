@@ -59,14 +59,14 @@ jobs:
         run: |
           case "${{ inputs.build_type }}" in
           qa)
-             ./gradlew assembleQa assembleQb checkQaUnitTest --gradle-user-home "../../../.gradle"
+             ./gradlew clean assembleQa assembleQb checkQaUnitTest --gradle-user-home "../../../.gradle"
             ;;
           release)
-             ./gradlew assembleRelease checkReleaseUnitTest --gradle-user-home "../../../.gradle"
+             ./gradlew clean assembleRelease checkReleaseUnitTest --gradle-user-home "../../../.gradle"
              ./gradlew bundleRelease --gradle-user-home "../../../.gradle"
             ;;
           *)
-             ./gradlew assembleDebug checkDebugUnitTest  --gradle-user-home "../../../.gradle"
+             ./gradlew clean assembleDebug checkDebugUnitTest  --gradle-user-home "../../../.gradle"
             ;;
           esac
         env:
