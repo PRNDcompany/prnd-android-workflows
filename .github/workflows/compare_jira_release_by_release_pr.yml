@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Jira release issue 비교 by release PR
         id: compare_jira_release_issue
-        uses: PRNDcompany/compare-jira-release-issue-by-release-pr@0.1
+        uses: PRNDcompany/compare-jira-release-issue-by-release-pr@0.2
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           jira-token: ${{ secrets.JIRA_AUTH_TOKEN }}
