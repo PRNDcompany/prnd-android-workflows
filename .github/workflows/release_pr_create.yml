@@ -23,7 +23,7 @@ jobs:
         id: extract_version
       - name: 배포 타입 추출
         id: extract_release_type
-        run: echo "type=$(echo ${GITHUB_REF_NAME} | cut -d'/' -f1)" >> $GITHUB_ENV
+        run: echo "type=$(echo ${GITHUB_REF_NAME} | cut -d'/' -f1)" >> $GITHUB_OUTPUT
       - name: Jira 릴리즈 노트 추출
         id: release_notes
         uses: PRNDcompany/jira-release-notes@0.7
