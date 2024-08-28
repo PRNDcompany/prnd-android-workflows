@@ -41,6 +41,7 @@ jobs:
           pr_assignee: ${{ github.event.head_commit.author.name }}
           pr_title: "${{ steps.extract_release_type.outputs.type }} ${{ steps.extract_version.outputs.version }}"
           pr_body: "# ${{ steps.release_notes.outputs.release_notes_url }}\n\n\n${{ steps.release_notes.outputs.release_notes }}"
+          pr_draft: ${{ inputs.main_branch_name == 'hotfix' }}
       - name: Release PR 생성 (develop)
         uses: repo-sync/pull-request@v2
         with:
@@ -49,3 +50,4 @@ jobs:
           pr_assignee: ${{ github.event.head_commit.author.name }}
           pr_title: "${{ steps.extract_release_type.outputs.type }} ${{ steps.extract_version.outputs.version }} -> develop"
           pr_body: "${{steps.create_pr.outputs.pr_url}}"
+          pr_draft: ${{ inputs.main_branch_name == 'hotfix' }}
