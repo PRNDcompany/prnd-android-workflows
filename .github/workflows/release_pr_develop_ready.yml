@@ -1,0 +1,20 @@
+name: Release PR develop ready
+
+on:
+  workflow_call:
+
+jobs:
+  pr_develop_ready:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: develop PR을 ready for review로 변경
+        run: |
+          PR_NUMBER=$(gh pr list --base develop --head "$GITHUB_HEAD_REF" --json number --jq '.[0].number')
+          if [ -n "$PR_NUMBER" ]; then
+            gh pr ready $PR_NUMBER
+          else
+            echo "develop PR을 찾지 못했습니다."
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
