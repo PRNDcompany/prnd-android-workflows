@@ -25,7 +25,7 @@ jobs:
       - name: VersionCode 추출후 +1 / 환경변수에 등록
         run: |
           version_name=${{ inputs.version_name }}
-          version_code=$(grep "versionCode" buildSrc/src/main/java/Dependencies.kt | awk '{print $4}' | tr -d '\n')
+          version_code=$(grep "versionCode" buildSrc/src/main/kotlin/Dependencies.kt | awk '{print $4}' | tr -d '\n')
           # 새로운 versionCode 생성
           new_version_code=$((version_code + 1))
           echo "$version_code -> $new_version_code"
@@ -38,8 +38,8 @@ jobs:
       - name: 파일에 VersionCode/VersionName 변경
         run: |
           echo "${{ env.VERSION_CODE }} - ${{ env.VERSION_NAME }}"
-          sed -i "s/versionCode = [0-9]\+/versionCode = ${{ env.VERSION_CODE }}/g" buildSrc/src/main/java/Dependencies.kt
-          sed -i "s/versionName = \"[^\"]*\"/versionName = \"${{ env.VERSION_NAME }}\"/g" buildSrc/src/main/java/Dependencies.kt
+          sed -i "s/versionCode = [0-9]\+/versionCode = ${{ env.VERSION_CODE }}/g" buildSrc/src/main/kotlin/Dependencies.kt
+          sed -i "s/versionName = \"[^\"]*\"/versionName = \"${{ env.VERSION_NAME }}\"/g" buildSrc/src/main/kotlin/Dependencies.kt
           
       - name: Commit & Push
         run: |
