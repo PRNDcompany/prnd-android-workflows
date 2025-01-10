@@ -72,6 +72,13 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+  publish-test-results:
+    needs: build-qa
+    name: Publish Test Results
+    uses: EnricoMi/publish-unit-test-result-action/macos@v2
+    with:
+      files: 'test-results/**/*.xml'
+
   move_s3_qa:
     needs: [ create-check-run, build-qa ]
     uses: ./.github/workflows/move_s3_qa.yml

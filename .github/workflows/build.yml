@@ -101,3 +101,9 @@ jobs:
           aws_bucket: ${{ inputs.bucket_name }}
           source_dir: "app/build/files"
           destination_dir: "tmp/${{ github.repository }}/${{ inputs.ref }}"
+  publish-test-results:
+    needs: build
+    name: Publish Test Results
+    uses: EnricoMi/publish-unit-test-result-action/macos@v2
+    with:
+      files: 'test-results/**/*.xml'
