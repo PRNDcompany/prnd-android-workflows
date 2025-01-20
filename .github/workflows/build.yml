@@ -11,9 +11,6 @@ on:
       ref:
         type: string
         default: ${{ github.ref }}
-      branch_name:
-        type: string
-        default: ${{ github.ref }}
       bucket_name:
         required: false
         type: string
@@ -79,7 +76,7 @@ jobs:
           HEY_DEALER_FOR_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_FOR_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
           HEY_DEALER_FOR_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          BRANCH_NAME: ${{ inputs.branch_name }}
+          BRANCH_NAME: ${{ github.ref }}
       - name: Extra gradle task
         if: inputs.extra_task != ''
         run: |
@@ -91,7 +88,7 @@ jobs:
           HEY_DEALER_FOR_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_FOR_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
           HEY_DEALER_FOR_DEALER_SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          BRANCH_NAME: ${{ inputs.branch_name }}
+          BRANCH_NAME: ${{ github.ref }}
       - name: Copy to files directory
         if:  inputs.bucket_name != '' && ( inputs.build_type == 'qa' || inputs.build_type == 'release' )
         run: |
