@@ -25,10 +25,10 @@ on:
       AWS_SECRET_ACCESS_KEY:
         required: true
 jobs:
-  create-check-run:
+  get-pr:
     runs-on: ubuntu-latest
     outputs:
-      check_run_id: ${{ fromJson(steps.create_check_run.outputs.data).id }}
+      head_sha: ${{ steps.get_head_sha.outputs.head_sha }}
       branch_name: ${{ steps.get_branch_name.outputs.branch_name }}
     steps:
       - name: PR 가져오기
@@ -46,6 +46,12 @@ jobs:
       - name: PR의 branch_name 가져오기
         id: get_branch_name
         run: echo "branch_name=$(echo ${{ fromJson(steps.get_pr.outputs.data).head.ref }})" >> $GITHUB_OUTPUT
+  create-check-run:
+    runs-on: ubuntu-latest
+    needs: get-pr
+    outputs:
+      check_run_id: ${{ fromJson(steps.create_check_run.outputs.data).id }}
+    steps:
       - name: Check Run 생성
         uses: octokit/request-action@v2.1.9
         id: create_check_run
@@ -53,7 +59,7 @@ jobs:
           route: POST /repos/{repository}/check-runs
           repository: ${{ github.repository }}
           name: "build-qa"
-          head_sha: ${{ steps.get_head_sha.outputs.head_sha }}
+          head_sha: ${{ needs.get-pr.outputs.head_sha }}
           status: "in_progress"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -73,12 +79,12 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   move_s3_qa:
-    needs: [ create-check-run, build-qa ]
+    needs: [ get-pr, build-qa ]
     uses: ./.github/workflows/move_s3_qa.yml
     with:
       app_name: ${{ inputs.app_name }}
       bucket_name: ${{ inputs.bucket_name }}
-      branch_name: ${{ needs.create-check-run.outputs.branch_name }}
+      branch_name: ${{ needs.get-pr.outputs.branch_name }}
       ref: refs/pull/${{ github.event.issue.number }}/merge
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
