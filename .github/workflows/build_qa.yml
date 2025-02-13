@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: PR 가져오기
         id: get_pr
-        uses: octokit/request-action@v2.1.9
+        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # 2.4.0
         with:
           route: GET /repos/{repository}/pulls/{pr_number}
           repository: ${{ github.repository }}
@@ -53,7 +53,7 @@ jobs:
       check_run_id: ${{ fromJson(steps.create_check_run.outputs.data).id }}
     steps:
       - name: Check Run 생성
-        uses: octokit/request-action@v2.1.9
+        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # 2.4.0
         id: create_check_run
         with:
           route: POST /repos/{repository}/check-runs
@@ -107,7 +107,7 @@ jobs:
     if: always()
     steps:
       - name: Check Run 동기화
-        uses: octokit/request-action@v2.1.9
+        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # 2.4.0
         with:
           route: PATCH /repos/{repository}/check-runs/{check_run_id}
           repository: ${{ github.repository }}
