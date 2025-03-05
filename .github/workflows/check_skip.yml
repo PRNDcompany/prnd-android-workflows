@@ -7,5 +7,6 @@ jobs:
     if: |
       github.event.pull_request.draft == false 
       && !contains(github.event.pull_request.title, 'skip-ci')
+      && !startsWith(github.head_ref, 'feature-base')
     steps:
       - run: echo "${{ github.event.pull_request.title }}"
