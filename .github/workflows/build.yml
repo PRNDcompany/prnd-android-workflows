@@ -59,11 +59,11 @@ jobs:
         run: |
           case "${{ inputs.build_type }}" in
           qa)
-             ./gradlew clean assembleQa assembleQb checkQaUnitTest --gradle-user-home "../../../.gradle"
+             ./gradlew clean :app:assembleQa :app:assembleQb checkQaUnitTest --gradle-user-home "../../../.gradle"
             ;;
           release)
-             ./gradlew clean assembleRelease checkReleaseUnitTest --gradle-user-home "../../../.gradle"
-             ./gradlew bundleRelease --gradle-user-home "../../../.gradle"
+             ./gradlew clean :app:assembleRelease checkReleaseUnitTest --gradle-user-home "../../../.gradle"
+             ./gradlew :app:bundleRelease --gradle-user-home "../../../.gradle"
             ;;
           *)
              ./gradlew assembleDebug checkDebugUnitTest  --gradle-user-home "../../../.gradle"
