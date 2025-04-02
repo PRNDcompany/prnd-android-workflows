@@ -53,7 +53,9 @@ jobs:
       - name: Build with Gradle
         # 현재 위치: runner/_work/repo_name/repo_name
         # gradle user home 위치: runner/.gradle
-        run: ./gradlew clean :app:assembleQa :app:assembleQb checkQaUnitTest :app:assembleRelease :app:bundleRelease checkReleaseUnitTest --gradle-user-home "../../../.gradle"
+        run: |
+          ./gradlew clean :app:assembleRelease :app:bundleRelease checkReleaseUnitTest --gradle-user-home "../../../.gradle"
+          ./gradlew app:assembleQa :app:assembleQb checkQaUnitTest --gradle-user-home "../../../.gradle"
         env:
           HEY_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
