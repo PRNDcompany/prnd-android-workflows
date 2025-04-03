@@ -14,6 +14,10 @@ on:
       deploy_url:
         required: true
         type: string
+      build_type:
+        required: false
+        type: string
+        default: 'qa'
     secrets:
       PERSONAL_ACCESS_TOKEN:
         required: true
@@ -103,7 +107,15 @@ jobs:
 
           echo $KEY_STORE_FILE | base64 --decode > $KEY_STORE_FILE_PATH
       - name: Build with Gradle
-        run: ./gradlew :app:assembleQa :app:assembleQb checkQaUnitTest
+        run: |
+          if [ "${{ inputs.build_type }}" = "qa" ]; then
+            ./gradlew :app:assembleQa checkQaUnitTest
+          elif [ "${{ inputs.build_type }}" = "qb" ]; then
+            ./gradlew :app:assembleQb
+          else
+            echo "Invalid build_type: ${{ inputs.build_type }}"
+            exit 1
+          fi
         env:
           HEY_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
@@ -142,7 +154,7 @@ jobs:
     needs: move_s3_qa
     uses: ./.github/workflows/output_path_comment.yml
     with:
-      build_type: qa
+      build_type: ${{ inputs.build_type }}
       user_name: ${{ github.event.comment.user.login }}
       pr_number: ${{ github.event.issue.number }}
       output_url: ${{ inputs.deploy_url }}/#${{ needs.move_s3_qa.outputs.path }}
