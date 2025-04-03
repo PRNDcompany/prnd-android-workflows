@@ -139,7 +139,7 @@ jobs:
 
 
   move_s3_qa:
-    needs: [ get-pr, build-qa ]
+    needs: [ get-pr, build ]
     uses: ./.github/workflows/move_s3_qa.yml
     with:
       app_name: ${{ inputs.app_name }}
@@ -163,7 +163,7 @@ jobs:
 
   update-check-run:
     runs-on: ubuntu-latest
-    needs: [ create-check-run, build-qa, move_s3_qa ]
+    needs: [ create-check-run, build, move_s3_qa ]
     if: always()
     steps:
       - name: Check Run 동기화
@@ -172,7 +172,7 @@ jobs:
           route: PATCH /repos/{repository}/check-runs/{check_run_id}
           repository: ${{ github.repository }}
           check_run_id: ${{ needs.create-check-run.outputs.check_run_id }}
-          conclusion: ${{ needs.build-qa.result }}
+          conclusion: ${{ needs.build.result }}
           status: "completed"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
