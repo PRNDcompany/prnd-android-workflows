@@ -103,7 +103,7 @@ jobs:
 
           echo $KEY_STORE_FILE | base64 --decode > $KEY_STORE_FILE_PATH
       - name: Build with Gradle
-        run: ./gradlew clean :app:assembleQa :app:assembleQb checkQaUnitTest
+        run: ./gradlew :app:assembleQa :app:assembleQb checkQaUnitTest
         env:
           HEY_DEALER_SIGNING_PATH: ${{ steps.decode_key_store_file.outputs.key_store_file_path }}
           HEY_DEALER_SIGNING_NAME: ${{ secrets.SIGNING_NAME }}
