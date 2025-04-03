@@ -30,7 +30,7 @@ on:
 jobs:
   check-skip:
     uses: ./.github/workflows/check_skip.yml
-  build-release:
+  build:
     runs-on: ubuntu-latest-8core
     needs: check-skip
     steps:

@@ -14,7 +14,7 @@ on:
 jobs:
   check-skip:
     uses: ./.github/workflows/check_skip.yml
-  build-debug:
+  build:
     runs-on: Android # self-hosted runner
     needs: check-skip
     steps:
