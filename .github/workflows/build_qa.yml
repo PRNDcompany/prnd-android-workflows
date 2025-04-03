@@ -102,10 +102,12 @@ jobs:
         env:
           KEY_STORE_FILE: ${{ secrets.KEY_STORE_FILE }}
         run: |
-          KEY_STORE_FILE_PATH=$(echo $RUNNER_TEMP/keystore)
+          KEYSTORE_DIR="$RUNNER_TEMP/keystore"
+          mkdir -p "$KEYSTORE_DIR"
+          KEY_STORE_FILE_PATH="$KEYSTORE_DIR/keystore.jks"
           echo "key_store_file_path=$KEY_STORE_FILE_PATH" >> "$GITHUB_OUTPUT"
 
-          echo $KEY_STORE_FILE | base64 --decode > $KEY_STORE_FILE_PATH
+          echo "$KEY_STORE_FILE" | base64 --decode > "$KEY_STORE_FILE_PATH"
       - name: Build with Gradle
         run: |
           if [ "${{ inputs.build_type }}" = "qa" ]; then
