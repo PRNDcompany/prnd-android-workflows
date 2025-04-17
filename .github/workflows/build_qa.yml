@@ -1,7 +1,4 @@
 name: QA 빌드
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number || github.ref }}
-  cancel-in-progress: true
 on:
   workflow_call:
     inputs:
@@ -73,6 +70,9 @@ jobs:
   build:
     runs-on: Android # self-hosted runner
     needs: create-check-run
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number || github.ref }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
         with:
