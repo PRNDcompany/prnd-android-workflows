@@ -18,6 +18,8 @@ jobs:
       github.event.pull_request.draft == false
       && !contains(github.event.pull_request.title, 'skip-ci')
       && !startsWith(github.head_ref, 'feature-base')
+      && !startsWith(github.head_ref, 'release')
+      && !startsWith(github.head_ref, 'hotfix')
     steps:
       - name: check-skip
         run: echo "" # no-op
