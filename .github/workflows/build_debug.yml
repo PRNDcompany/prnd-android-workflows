@@ -13,7 +13,14 @@ on:
         required: true
 jobs:
   check-skip:
-    uses: ./.github/workflows/check_skip.yml
+    runs-on: Android
+    if: |
+      github.event.pull_request.draft == false
+      && !contains(github.event.pull_request.title, 'skip-ci')
+      && !startsWith(github.head_ref, 'feature-base')
+    steps:
+      - name: check-skip
+        run: echo "" # no-op
   build:
     runs-on: Android # self-hosted runner
     needs: check-skip

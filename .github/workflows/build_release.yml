@@ -29,7 +29,12 @@ on:
         required: false
 jobs:
   check-skip:
-    uses: ./.github/workflows/check_skip.yml
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.draft == false
+    steps:
+      - name: check-skip
+        run: echo "" # no-op
   build:
     runs-on: ubuntu-latest-8core
     needs: check-skip
